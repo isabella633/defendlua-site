@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Protected Code</title>
+</head>
 <style>
     body {
         background-color: black;
@@ -14,18 +15,24 @@
         padding: 1rem;
     }
 </style>
-</head>
-<body>
+<h1>Your Protected Code</h1>
+<pre id="codeDisplay"></pre>
+
 <script>
-const params = new URLSearchParams(window.location.search);
-const encoded = params.get('c');
-if(encoded){
+function getCodeFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get('c');
+    if(!encoded) return "No code found.";
+
     try {
-        document.body.textContent = decodeURIComponent(escape(atob(encoded)));
+        // Decode the Base64 code
+        return decodeURIComponent(escape(atob(encoded)));
     } catch(e) {
-        document.body.textContent = "Failed to decode code.";
+        return "Failed to decode code.";
     }
 }
+
+document.getElementById('codeDisplay').textContent = getCodeFromURL();
 </script>
 </body>
 </html>
