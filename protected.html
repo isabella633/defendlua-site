@@ -1,37 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Protected Code</title>
-</head>
-<style>
-    body {
-        background-color: black;
-        color: #00FF00;
-        font-family: monospace;
-        white-space: pre-wrap;
-        margin: 0;
-        padding: 1rem;
-    }
-</style>
-<pre id="codeDisplay"></pre>
-
 <script>
-function getCodeFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const encoded = params.get('c');
-    if(!encoded) return "No code found.";
-
+const params = new URLSearchParams(window.location.search);
+const encoded = params.get('c');
+if(encoded){
     try {
-
-        return decodeURIComponent(escape(atob(encoded)));
+        // Decode and write the code directly to the page
+        document.write(decodeURIComponent(escape(atob(encoded))));
     } catch(e) {
-        return "Failed to decode code.";
+        document.write("Failed to decode code.");
     }
+} else {
+    document.write("No code found.");
 }
-
-document.getElementById('codeDisplay').textContent = getCodeFromURL();
 </script>
-</body>
-</html>
