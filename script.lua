@@ -1,4 +1,3 @@
-<script>
 const params = new URLSearchParams(window.location.search);
 const encoded = params.get('c');
 if(encoded){
@@ -7,4 +6,3 @@ if(encoded){
     document.write(`<pre>${code}</pre>`);
     document.close();
 }
-<script>
