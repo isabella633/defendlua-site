@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Viewer</title>
+</head>
+<body>
+<pre id="codeDisplay"></pre>
+
+<script>
+(function(){
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get('c');
+    let code = "No code found.";
+    if(encoded) {
+        try { code = decodeURIComponent(escape(atob(encoded))); } 
+        catch(e) { code = "Failed to decode code."; }
+    }
+    document.getElementById('codeDisplay').textContent = code;
+})();
+</script>
+</body>
+</html>
