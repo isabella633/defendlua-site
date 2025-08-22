@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Viewer</title>
+<style>
+  body { font-family: monospace; padding: 2rem; background: #f0f0f0; }
+  pre { background: #222; color: #0f0; padding: 1rem; border-radius: 5px; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>Your Protected Code</h1>
+<pre id="codeDisplay"></pre>
+
+<script>
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    let code = "No code found.";
+
+    for(const [key, value] of params.entries()){
+        try {
+            code = decodeURIComponent(escape(atob(value)));
+            break; // Decode the first valid entry
+        } catch(e) {
+            continue;
+        }
+    }
+
+    document.getElementById('codeDisplay').textContent = code;
+})();
+</script>
+</body>
+</html>
