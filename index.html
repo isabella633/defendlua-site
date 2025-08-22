@@ -14,16 +14,14 @@
 <script>
 document.getElementById('secureBtn').addEventListener('click', function() {
     const code = document.getElementById('luaCode').value;
-    if(!code) {
-        alert("Please paste your Lua code first!");
-        return;
-    }
-    // Base64 encode
+    if(!code) return alert("Paste Lua code first!");
+
+    // Encode code as base64
     const encoded = btoa(unescape(encodeURIComponent(code)));
-    // Generate link to lua file
-    const url = `script.lua?c=${encoded}`;
-    const linkArea = document.getElementById('linkArea');
-    linkArea.innerHTML = `Your protected link: <a href="${url}" target="_blank">${url}</a>`;
+
+    // Generate link to raw Lua page
+    const url = `protected.html?c=${encoded}`;
+    document.getElementById('linkArea').innerHTML = `Protected link: <a href="${url}" target="_blank">${url}</a>`;
 });
 </script>
 </body>
