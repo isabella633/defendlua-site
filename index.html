@@ -18,11 +18,11 @@
 <p id="output"></p>
 
 <script>
-function randomString(length = 32) {
+function randomString(length = 16) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
-    for(let i=0; i<length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    for(let i=0;i<length;i++){
+        result += chars.charAt(Math.floor(Math.random()*chars.length));
     }
     return result;
 }
@@ -31,28 +31,40 @@ function protectCode() {
     const code = document.getElementById('codeInput').value;
     if(!code) return alert('Please enter some code.');
 
-    // Generate random filename
     const filename = randomString(20) + '.html';
+    
+    // Generate a new HTML file content
+    const fileContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Protected Code</title>
+<style>
+  body { font-family: monospace; white-space: pre; padding: 2rem; background: #f5f5f5; }
+</style>
+</head>
+<body>
+${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+</body>
+</html>`;
 
-    // Store code in localStorage keyed by filename
-    localStorage.setItem(filename, code);
-
-    // Create short URL
-    const protectedURL = window.location.origin + '/' + filename;
+    // Create a blob and download link
+    const blob = new Blob([fileContent], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
 
     document.getElementById('output').innerHTML = `
-        <strong>Protected URL:</strong> <a href="${protectedURL}" target="_blank">${protectedURL}</a>
+        <strong>Protected URL:</strong> <a href="${url}" target="_blank">Open Protected Code</a><br>
+        <button onclick="downloadFile()">Download HTML</button>
     `;
-}
 
-// Automatically load code if this is a protected page
-window.addEventListener('DOMContentLoaded', () => {
-    const filename = window.location.pathname.split('/').pop();
-    const code = localStorage.getItem(filename);
-    if(code) {
-        document.body.innerHTML = `<h1>Protected Code</h1><pre>${code}</pre>`;
-    }
-});
+    // Download function
+    window.downloadFile = () => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+    };
+}
 </script>
 </body>
 </html>
