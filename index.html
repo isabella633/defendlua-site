@@ -4,59 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Protect Lua Code</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #121212;
-        color: #ffffff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-    }
-    textarea {
-        width: 100%;
-        max-width: 600px;
-        height: 300px;
-        background-color: #1e1e1e;
-        color: #ffffff;
-        border: 1px solid #333;
-        padding: 10px;
-        font-family: monospace;
-        resize: vertical;
-    }
-    button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    a {
-        margin-top: 20px;
-        color: #00ff99;
-        word-break: break-all;
-    }
-</style>
 </head>
 <body>
-
 <h1>Protect Lua Code</h1>
-<p>Paste your Lua script below and click "Secure Code" to generate a downloadable .lua file.</p>
-
-<textarea id="luaCode" placeholder="Paste your Lua code here..."></textarea>
+<textarea id="luaCode" rows="10" cols="50" placeholder="Paste Lua code here"></textarea><br>
 <button id="secureBtn">Secure Code</button>
-
-<a id="downloadLink" style="display:none;" download="protected.lua">Download Protected Lua File</a>
+<p id="linkArea"></p>
 
 <script>
 document.getElementById('secureBtn').addEventListener('click', function() {
@@ -65,17 +18,13 @@ document.getElementById('secureBtn').addEventListener('click', function() {
         alert("Please paste your Lua code first!");
         return;
     }
-
-    // Convert code to Blob and create download link
-    const blob = new Blob([code], {type: 'text/plain'});
-    const url = URL.createObjectURL(blob);
-
-    const link = document.getElementById('downloadLink');
-    link.href = url;
-    link.style.display = 'inline';
-    link.click(); // automatically prompt download
+    // Base64 encode
+    const encoded = btoa(unescape(encodeURIComponent(code)));
+    // Generate link to lua file
+    const url = `script.lua?c=${encoded}`;
+    const linkArea = document.getElementById('linkArea');
+    linkArea.innerHTML = `Your protected link: <a href="${url}" target="_blank">${url}</a>`;
 });
 </script>
-
 </body>
 </html>
