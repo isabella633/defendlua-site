@@ -31,18 +31,28 @@ function protectCode() {
     const code = document.getElementById('codeInput').value;
     if(!code) return alert('Please enter some code.');
 
-    const encoded = btoa(unescape(encodeURIComponent(code)));
-
     // Generate random filename
     const filename = randomString(20) + '.html';
 
-    // Create full URL
-    const protectedURL = window.location.origin + '/' + filename + '?c=' + encoded;
+    // Store code in localStorage keyed by filename
+    localStorage.setItem(filename, code);
+
+    // Create short URL
+    const protectedURL = window.location.origin + '/' + filename;
 
     document.getElementById('output').innerHTML = `
         <strong>Protected URL:</strong> <a href="${protectedURL}" target="_blank">${protectedURL}</a>
     `;
 }
+
+// Automatically load code if this is a protected page
+window.addEventListener('DOMContentLoaded', () => {
+    const filename = window.location.pathname.split('/').pop();
+    const code = localStorage.getItem(filename);
+    if(code) {
+        document.body.innerHTML = `<h1>Protected Code</h1><pre>${code}</pre>`;
+    }
+});
 </script>
 </body>
 </html>
