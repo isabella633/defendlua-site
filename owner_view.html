@@ -1,0 +1,117 @@
+
+{% extends "base.html" %}
+
+{% block title %}Owner Dashboard - balls.lol{% endblock %}
+
+{% block content %}
+<div class="card" style="background: rgba(0,255,0,0.1); border-color: rgba(0,255,0,0.3);">
+    <h2>👑 Owner Dashboard</h2>
+    <p>Welcome back! You are viewing your protected code.</p>
+    <p><strong>Code ID:</strong> {{ code_id }}</p>
+</div>
+
+<div class="card">
+    <h3>📝 Your Protected Code</h3>
+    <textarea readonly style="height: 200px;">{{ code }}</textarea>
+    <div style="margin-top: 15px;">
+        <a href="/edit/{{ code_id }}" class="btn">✏️ Edit Code</a>
+        <button class="btn" style="background: #e74c3c;" onclick="deleteCode('{{ code_id }}')">🗑️ Delete Code</button>
+        <button class="btn btn-secondary" onclick="refreshLogs()">🔄 Refresh Logs</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3>📊 Access Logs</h3>
+    <div id="accessLogs">
+        {% if access_logs %}
+            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+                {% for log in access_logs %}
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 0;">
+                    <strong>🌐 IP:</strong> {{ log.ip }}<br>
+                    <strong>⏰ Time:</strong> {{ log.timestamp }}<br>
+                    <strong>🔗 Access Type:</strong> {{ log.get('access_type', 'web_view') }}<br>
+                    <strong>🖥️ User Agent:</strong> {{ log.user_agent[:100] }}...
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No access attempts logged yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔗 Share Your Protected Code</h3>
+    <div class="input-group">
+        <label class="label">Protected URL:</label>
+        <input type="url" id="shareUrl" value="{{ request.url_root }}view/{{ code_id }}" readonly>
+        <button class="btn copy-btn" onclick="copyToClipboard(document.getElementById('shareUrl').value)">📋 Copy Link</button>
+    </div>
+    <div class="input-group">
+        <label class="label">Loadstring URL (Roblox):</label>
+        <input type="text" id="loadstringShareUrl" value="{{ request.url_root }}api/loadstring/{{ code_id }}" readonly>
+        <button class="btn copy-btn" onclick="copyOwnerLoadstring()">📋 Copy Loadstring</button>
+    </div>
+    <p style="margin-top: 10px; opacity: 0.8;">Share these links with others. The loadstring includes extra IP protection and monitoring.</p>
+</div>
+
+<script>
+function deleteCode(codeId) {
+    if (confirm('Are you sure you want to delete this protected code? This action cannot be undone.')) {
+        fetch(`/delete/${codeId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Code deleted successfully!');
+                window.location.href = '/';
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Error deleting code: ' + error);
+        });
+    }
+}
+
+function copyOwnerLoadstring() {
+    const url = document.getElementById('loadstringShareUrl').value;
+    const loadstring = `loadstring(game:HttpGet('${url}'))()`;
+    copyToClipboard(loadstring);
+}
+
+function refreshLogs() {
+    fetch(`/api/logs/{{ code_id }}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.logs) {
+            let logsHtml = '';
+            if (data.logs.length > 0) {
+                logsHtml = '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;">';
+                data.logs.forEach(log => {
+                    logsHtml += `
+                        <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 0;">
+                            <strong>IP:</strong> ${log.ip}<br>
+                            <strong>Time:</strong> ${log.timestamp}<br>
+                            <strong>User Agent:</strong> ${log.user_agent.substring(0, 100)}...
+                        </div>
+                    `;
+                });
+                logsHtml += '</div>';
+            } else {
+                logsHtml = '<p>No access attempts logged yet.</p>';
+            }
+            document.getElementById('accessLogs').innerHTML = logsHtml;
+        }
+    })
+    .catch(error => {
+        alert('Error refreshing logs: ' + error);
+    });
+}
+
+// Auto-refresh logs every 30 seconds
+setInterval(refreshLogs, 30000);
+</script>
+{% endblock %}

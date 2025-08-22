@@ -1,0 +1,45 @@
+
+{% extends "base.html" %}
+
+{% block title %}Edit Code - balls.lol{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>✏️ Edit Your Protected Code</h2>
+    <form id="editForm" method="POST" action="/edit/{{ code_id }}">
+        <div class="input-group">
+            <label class="label">Code:</label>
+            <textarea id="codeEditor" name="code" required>{{ code }}</textarea>
+        </div>
+        <button type="submit" class="btn">💾 Save Changes</button>
+        <a href="/view/{{ code_id }}" class="btn btn-secondary">🔙 Back to Dashboard</a>
+    </form>
+
+
+<script>
+document.getElementById('editForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const code = document.getElementById('codeEditor').value;
+    const formData = new FormData();
+    formData.append('code', code);
+    
+    fetch(`/edit/{{ code_id }}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Code updated successfully!');
+            window.location.href = '/view/{{ code_id }}';
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error updating code: ' + error);
+    });
+});
+</script>
+{% endblock %}

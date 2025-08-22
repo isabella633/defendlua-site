@@ -1,0 +1,126 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>🔒 Protect Your Code</h2>
+    <form id="protectForm">
+        <div class="input-group">
+            <label class="label">Paste your code below:</label>
+            <textarea id="codeInput" placeholder="Enter your code here..." required></textarea>
+        </div>
+        <div style="margin: 10px 0;">
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="showIps">
+                <span>Enable IP logging and monitoring (recommended for extra protection)</span>
+            </label>
+        </div>
+        <button type="submit" class="btn">🛡️ Protect Code</button>
+        <button type="button" class="btn btn-secondary" onclick="obfuscateCode()">🔀 Obfuscate Only</button>
+    </form>
+    
+    <div id="result" class="result" style="display: none;">
+        <h3>✅ Code Protected Successfully!</h3>
+        <div class="input-group">
+            <label class="label">Protected URL:</label>
+            <input type="url" id="protectedUrl" readonly>
+            <button class="btn copy-btn" onclick="copyToClipboard(document.getElementById('protectedUrl').value)">📋 Copy</button>
+        </div>
+        <div class="input-group">
+            <label class="label">Loadstring URL (for Roblox):</label>
+            <input type="text" id="loadstringUrl" readonly>
+            <button class="btn copy-btn" onclick="copyLoadstring()">📋 Copy Loadstring</button>
+        </div>
+        <p><strong>Save these URLs!</strong> Only you (from this IP) can edit/delete the code.</p>
+        <p><em>🔒 The loadstring URL includes extra IP protection and monitoring.</em></p>
+    </div>
+    
+    <div id="obfuscatedResult" class="result" style="display: none;">
+        <h3>🔀 Code Obfuscated!</h3>
+        <textarea id="obfuscatedCode" readonly style="height: 150px;"></textarea>
+        <button class="btn copy-btn" onclick="copyToClipboard(document.getElementById('obfuscatedCode').value)">📋 Copy Obfuscated Code</button>
+    </div>
+</div>
+
+<div class="card">
+    <h2>📊 Features</h2>
+    <ul style="list-style: none; padding-left: 0;">
+        <li>🔒 <strong>Code Protection:</strong> Generate secure links for your code</li>
+        <li>⚠️ <strong>Access Warnings:</strong> Non-owners see warning messages</li>
+        <li>🔀 <strong>Code Obfuscation:</strong> Make your code unreadable</li>
+        <li>📊 <strong>Access Logging:</strong> Track who tries to view your code</li>
+        <li>✏️ <strong>Owner Controls:</strong> Edit, delete, and manage your protected code</li>
+        <li>🌐 <strong>IP-based Authentication:</strong> Automatic owner recognition</li>
+    </ul>
+</div>
+
+<script>
+document.getElementById('protectForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const code = document.getElementById('codeInput').value;
+    if (!code.trim()) {
+        alert('Please enter some code to protect!');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('code', code);
+    
+    fetch('/protect', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('protectedUrl').value = data.protected_url;
+            document.getElementById('loadstringUrl').value = data.loadstring_url;
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('obfuscatedResult').style.display = 'none';
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error protecting code: ' + error);
+    });
+});
+
+function obfuscateCode() {
+    const code = document.getElementById('codeInput').value;
+    if (!code.trim()) {
+        alert('Please enter some code to obfuscate!');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('code', code);
+    formData.append('show_ips', document.getElementById('showIps').checked);
+    
+    fetch('/obfuscate', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.obfuscated_code) {
+            document.getElementById('obfuscatedCode').value = data.obfuscated_code;
+            document.getElementById('obfuscatedResult').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error obfuscating code: ' + error);
+    });
+}
+
+function copyLoadstring() {
+    const url = document.getElementById('loadstringUrl').value;
+    const loadstring = `loadstring(game:HttpGet('${url}'))()`;
+    copyToClipboard(loadstring);
+}
+</script>
+{% endblock %}
