@@ -4,32 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Protected Code</title>
-<style>
-  body { font-family: Arial, sans-serif; padding: 2rem; background: #f5f5f5; }
-  pre { background: #eee; padding: 1rem; border-radius: 5px; overflow-x: auto; }
-</style>
 </head>
 <body>
 <h1>Your Protected Code</h1>
 <pre id="codeDisplay"></pre>
 
 <script>
-function getCode() {
+function getCodeFromURL() {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if(!id) return "No code found.";
-
-    const encoded = localStorage.getItem('protectedCode_' + id);
-    if(!encoded) return "Code not found or expired.";
+    const encoded = params.get('c');
+    if(!encoded) return "No code found.";
 
     try {
+        // Decode the Base64 code
         return decodeURIComponent(escape(atob(encoded)));
     } catch(e) {
         return "Failed to decode code.";
     }
 }
 
-document.getElementById('codeDisplay').textContent = getCode();
+document.getElementById('codeDisplay').textContent = getCodeFromURL();
 </script>
 </body>
 </html>
