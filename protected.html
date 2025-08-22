@@ -15,7 +15,6 @@
         padding: 1rem;
     }
 </style>
-<h1>Your Protected Code</h1>
 <pre id="codeDisplay"></pre>
 
 <script>
@@ -25,7 +24,7 @@ function getCodeFromURL() {
     if(!encoded) return "No code found.";
 
     try {
-        // Decode the Base64 code
+
         return decodeURIComponent(escape(atob(encoded)));
     } catch(e) {
         return "Failed to decode code.";
