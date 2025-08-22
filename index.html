@@ -18,10 +18,10 @@
 <p id="output"></p>
 
 <script>
-function randomString(length = 32) {
+function randomString(length = 50) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
-    for(let i=0; i<length; i++) {
+    for(let i=0;i<length;i++){
         result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
@@ -31,13 +31,14 @@ function protectCode() {
     const code = document.getElementById('codeInput').value;
     if(!code) return alert('Please enter some code.');
 
+    // Encode code as Base64
     const encoded = btoa(unescape(encodeURIComponent(code)));
 
-    // Generate random filename
-    const filename = randomString(20) + '.html';
+    // Generate a long, random query string parameter
+    const longParam = randomString(50) + '=' + encoded;
 
-    // Create full URL
-    const protectedURL = window.location.origin + '/' + filename + '?c=' + encoded;
+    // Construct the URL pointing to viewer.html
+    const protectedURL = window.location.origin + '/viewer.html?' + longParam;
 
     document.getElementById('output').innerHTML = `
         <strong>Protected URL:</strong> <a href="${protectedURL}" target="_blank">${protectedURL}</a>
