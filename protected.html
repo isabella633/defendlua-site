@@ -1,14 +1,11 @@
 <script>
-(function() {
-    const params = new URLSearchParams(window.location.search);
-    const encoded = params.get('c');
-    if(!encoded) return;
-
+const params = new URLSearchParams(window.location.search);
+const encoded = params.get('c');
+if(encoded){
     try {
-        // Decode and write the code directly
         document.write(decodeURIComponent(escape(atob(encoded))));
     } catch(e) {
         document.write("Failed to decode code.");
     }
-})();
+}
 </script>
