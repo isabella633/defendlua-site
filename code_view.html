@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card border-0">
+      <div class="card-body">
+        <h3 class="mb-3">Protected Code</h3>
+        <p class="text-secondary">Created: {{ pc.created_at.strftime('%Y-%m-%d %H:%M:%S') }}{% if pc.create_ip %} • Owner IP: {{ pc.create_ip }}{% endif %}</p>
+        <pre class="p-3 rounded" style="background:#0d1117; border:1px solid #30363d; white-space:pre-wrap;">{{ pc.code }}</pre>
+
+        {% if current_user.is_authenticated and current_user.id == pc.owner_id %}
+        <hr>
+        <h5>Edit Code (Owner)</h5>
+        <form action="{{ url_for('update_code', uid=pc.uuid) }}" method="POST">
+          <textarea name="code" class="form-control mb-2" rows="10">{{ pc.code }}</textarea>
+          <button class="btn btn-primary">Save Changes</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card border-0">
+      <div class="card-body">
+        <h5 class="mb-3">Use in Roblox</h5>
+        <div class="input-group">
+          <span class="input-group-text">Loadstring</span>
+          <input type="text" class="form-control" value="loadstring(game:HttpGet('{{ url_for('raw_code', uid=pc.uuid, _external=True) }}'))()" readonly>
+          <button class="btn btn-outline-secondary" onclick="copyToClipboard('loadstring(game:HttpGet(\'{{ url_for('raw_code', uid=pc.uuid, _external=True) }}\'))()')">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
