@@ -1,11 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protected Code</title>
+<style>
+    body {
+        background-color: black;
+        color: #00FF00;
+        font-family: monospace;
+        white-space: pre-wrap;
+        margin: 0;
+        padding: 1rem;
+    }
+</style>
+</head>
+<body>
 <script>
 const params = new URLSearchParams(window.location.search);
 const encoded = params.get('c');
 if(encoded){
     try {
-        document.write(decodeURIComponent(escape(atob(encoded))));
+        document.body.textContent = decodeURIComponent(escape(atob(encoded)));
     } catch(e) {
-        document.write("Failed to decode code.");
+        document.body.textContent = "Failed to decode code.";
     }
 }
 </script>
+</body>
+</html>
