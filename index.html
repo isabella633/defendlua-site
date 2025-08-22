@@ -7,8 +7,7 @@
 <style>
   body { font-family: Arial, sans-serif; padding: 2rem; background: #f5f5f5; }
   textarea { width: 100%; height: 200px; margin-bottom: 1rem; }
-  button { padding: 0.5rem 1rem; font-size: 1rem; }
-  #output a { word-break: break-all; }
+  input, button { padding: 0.5rem; font-size: 1rem; }
 </style>
 </head>
 <body>
@@ -18,52 +17,19 @@
 <p id="output"></p>
 
 <script>
-function randomString(length = 16) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for(let i=0;i<length;i++){
-        result += chars.charAt(Math.floor(Math.random()*chars.length));
-    }
-    return result;
-}
-
 function protectCode() {
     const code = document.getElementById('codeInput').value;
     if(!code) return alert('Please enter some code.');
 
-    const filename = randomString(20) + '.html';
-    
-    // Generate a new HTML file content
-    const fileContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Protected Code</title>
-<style>
-  body { font-family: monospace; white-space: pre; padding: 2rem; background: #f5f5f5; }
-</style>
-</head>
-<body>
-${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-</body>
-</html>`;
+   
+    const encoded = btoa(unescape(encodeURIComponent(code)));
 
-    // Create a blob and download link
-    const blob = new Blob([fileContent], {type: 'text/html'});
-    const url = URL.createObjectURL(blob);
+   
+    const protectedURL = window.location.origin + '/protected.html?c=' + encoded;
 
     document.getElementById('output').innerHTML = `
-        <strong>Protected URL:</strong> <a href="${url}" target="_blank">Open Protected Code</a><br>
-        <button onclick="downloadFile()">Download HTML</button>
+        <strong>Protected URL:</strong> <a href="${protectedURL}" target="_blank">${protectedURL}</a>
     `;
-
-    // Download function
-    window.downloadFile = () => {
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-    };
 }
 </script>
 </body>
