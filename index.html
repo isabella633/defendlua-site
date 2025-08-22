@@ -1,57 +1,80 @@
-
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <h2>🔒 Protect Your Code</h2>
-    <form id="protectForm">
-        <div class="input-group">
-            <label class="label">Paste your code below:</label>
-            <textarea id="codeInput" placeholder="Enter your code here..." required></textarea>
-        </div>
-        <div style="margin: 10px 0;">
-            <label style="display: flex; align-items: center; gap: 10px;">
-                <input type="checkbox" id="showIps">
-                <span>Enable IP logging and monitoring (recommended for extra protection)</span>
-            </label>
-        </div>
-        <button type="submit" class="btn">🛡️ Protect Code</button>
-        <button type="button" class="btn btn-secondary" onclick="obfuscateCode()">🔀 Obfuscate Only</button>
-    </form>
-    
-    <div id="result" class="result" style="display: none;">
-        <h3>✅ Code Protected Successfully!</h3>
-        <div class="input-group">
-            <label class="label">Protected URL:</label>
-            <input type="url" id="protectedUrl" readonly>
-            <button class="btn copy-btn" onclick="copyToClipboard(document.getElementById('protectedUrl').value)">📋 Copy</button>
-        </div>
-        <div class="input-group">
-            <label class="label">Loadstring URL (for Roblox):</label>
-            <input type="text" id="loadstringUrl" readonly>
-            <button class="btn copy-btn" onclick="copyLoadstring()">📋 Copy Loadstring</button>
-        </div>
-        <p><strong>Save these URLs!</strong> Only you (from this IP) can edit/delete the code.</p>
-        <p><em>🔒 The loadstring URL includes extra IP protection and monitoring.</em></p>
-    </div>
-    
-    <div id="obfuscatedResult" class="result" style="display: none;">
-        <h3>🔀 Code Obfuscated!</h3>
-        <textarea id="obfuscatedCode" readonly style="height: 150px;"></textarea>
-        <button class="btn copy-btn" onclick="copyToClipboard(document.getElementById('obfuscatedCode').value)">📋 Copy Obfuscated Code</button>
-    </div>
-</div>
+<div class="container my-5">
 
-<div class="card">
-    <h2>📊 Features</h2>
-    <ul style="list-style: none; padding-left: 0;">
-        <li>🔒 <strong>Code Protection:</strong> Generate secure links for your code</li>
-        <li>⚠️ <strong>Access Warnings:</strong> Non-owners see warning messages</li>
-        <li>🔀 <strong>Code Obfuscation:</strong> Make your code unreadable</li>
-        <li>📊 <strong>Access Logging:</strong> Track who tries to view your code</li>
-        <li>✏️ <strong>Owner Controls:</strong> Edit, delete, and manage your protected code</li>
-        <li>🌐 <strong>IP-based Authentication:</strong> Automatic owner recognition</li>
-    </ul>
+    <!-- Protect Code Card -->
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body">
+            <h2 class="mb-4">🔒 Protect Your Code</h2>
+            <form id="protectForm">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Paste your code below:</label>
+                    <textarea id="codeInput" class="form-control" rows="8" placeholder="Enter your code here..." required></textarea>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="showIps" class="form-check-input">
+                    <label for="showIps" class="form-check-label">
+                        Enable IP logging and monitoring <span class="text-muted">(recommended)</span>
+                    </label>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        🛡️ Protect Code
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="obfuscateCode()">
+                        🔀 Obfuscate Only
+                    </button>
+                </div>
+            </form>
+
+            <!-- Protect Result -->
+            <div id="result" class="alert alert-success mt-4 d-none">
+                <h5 class="mb-3">✅ Code Protected Successfully!</h5>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Protected URL</span>
+                    <input type="url" id="protectedUrl" class="form-control" readonly>
+                    <button class="btn btn-outline-secondary" type="button"
+                        onclick="copyToClipboard(document.getElementById('protectedUrl').value)">📋 Copy</button>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Loadstring URL</span>
+                    <input type="text" id="loadstringUrl" class="form-control" readonly>
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyLoadstring()">📋 Copy</button>
+                </div>
+
+                <p class="mb-1"><strong>Save these URLs!</strong> Only you (from this IP) can edit/delete the code.</p>
+                <small class="text-muted">🔒 The loadstring URL includes extra IP protection and monitoring.</small>
+            </div>
+
+            <!-- Obfuscate Result -->
+            <div id="obfuscatedResult" class="alert alert-info mt-4 d-none">
+                <h5 class="mb-3">🔀 Code Obfuscated!</h5>
+                <textarea id="obfuscatedCode" class="form-control mb-2" rows="6" readonly></textarea>
+                <button class="btn btn-outline-secondary"
+                    onclick="copyToClipboard(document.getElementById('obfuscatedCode').value)">📋 Copy Obfuscated Code</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Card -->
+    <div class="card shadow-sm border-0 rounded-3 mt-4">
+        <div class="card-body">
+            <h2 class="mb-3">📊 Features</h2>
+            <ul class="list-unstyled mb-0">
+                <li>🔒 <strong>Code Protection:</strong> Generate secure links for your code</li>
+                <li>⚠️ <strong>Access Warnings:</strong> Non-owners see warning messages</li>
+                <li>🔀 <strong>Code Obfuscation:</strong> Make your code unreadable</li>
+                <li>📊 <strong>Access Logging:</strong> Track who tries to view your code</li>
+                <li>✏️ <strong>Owner Controls:</strong> Edit, delete, and manage your protected code</li>
+                <li>🌐 <strong>IP-based Authentication:</strong> Automatic owner recognition</li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -76,8 +99,8 @@ document.getElementById('protectForm').addEventListener('submit', function(e) {
         if (data.success) {
             document.getElementById('protectedUrl').value = data.protected_url;
             document.getElementById('loadstringUrl').value = data.loadstring_url;
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('obfuscatedResult').style.display = 'none';
+            document.getElementById('result').classList.remove('d-none');
+            document.getElementById('obfuscatedResult').classList.add('d-none');
         } else {
             alert('Error: ' + data.error);
         }
@@ -106,8 +129,8 @@ function obfuscateCode() {
     .then(data => {
         if (data.obfuscated_code) {
             document.getElementById('obfuscatedCode').value = data.obfuscated_code;
-            document.getElementById('obfuscatedResult').style.display = 'block';
-            document.getElementById('result').style.display = 'none';
+            document.getElementById('obfuscatedResult').classList.remove('d-none');
+            document.getElementById('result').classList.add('d-none');
         } else {
             alert('Error: ' + data.error);
         }
