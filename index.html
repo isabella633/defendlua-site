@@ -17,26 +17,15 @@
 <p id="output"></p>
 
 <script>
-// Function to generate a random ID
-function randomID(length = 8) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for(let i=0; i<length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-    return result;
-}
-
 function protectCode() {
     const code = document.getElementById('codeInput').value;
     if(!code) return alert('Please enter some code.');
 
-    // Generate random ID
-    const id = randomID();
+    // Convert code to Base64 to "hide" it
+    const encoded = btoa(unescape(encodeURIComponent(code)));
 
-    // Store code in localStorage with the ID
-    localStorage.setItem('protectedCode_' + id, btoa(unescape(encodeURIComponent(code))));
-
-    // Generate short URL
-    const protectedURL = window.location.origin + '/protected.html?id=' + id;
+    // Create a new URL with the code encoded as a query parameter
+    const protectedURL = window.location.origin + '/protected.html?c=' + encoded;
 
     document.getElementById('output').innerHTML = `
         <strong>Protected URL:</strong> <a href="${protectedURL}" target="_blank">${protectedURL}</a>
