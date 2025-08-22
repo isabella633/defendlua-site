@@ -1,29 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Protected Code</title>
-</head>
-<body>
-<h1>Your Protected Code</h1>
-<pre id="codeDisplay"></pre>
-
 <script>
-function getCodeFromURL() {
+(function() {
     const params = new URLSearchParams(window.location.search);
     const encoded = params.get('c');
-    if(!encoded) return "No code found.";
+    if(!encoded) return;
 
     try {
-        // Decode the Base64 code
-        return decodeURIComponent(escape(atob(encoded)));
+        // Decode and write the code directly
+        document.write(decodeURIComponent(escape(atob(encoded))));
     } catch(e) {
-        return "Failed to decode code.";
+        document.write("Failed to decode code.");
     }
-}
-
-document.getElementById('codeDisplay').textContent = getCodeFromURL();
+})();
 </script>
-</body>
-</html>
