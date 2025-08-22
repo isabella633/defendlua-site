@@ -14,20 +14,22 @@
 <pre id="codeDisplay"></pre>
 
 <script>
-function getCodeFromURL() {
+function getCode() {
     const params = new URLSearchParams(window.location.search);
-    const encoded = params.get('c');
-    if(!encoded) return "No code found.";
+    const id = params.get('id');
+    if(!id) return "No code found.";
+
+    const encoded = localStorage.getItem('protectedCode_' + id);
+    if(!encoded) return "Code not found or expired.";
 
     try {
-        // Decode the Base64 code
         return decodeURIComponent(escape(atob(encoded)));
     } catch(e) {
         return "Failed to decode code.";
     }
 }
 
-document.getElementById('codeDisplay').textContent = getCodeFromURL();
+document.getElementById('codeDisplay').textContent = getCode();
 </script>
 </body>
 </html>
