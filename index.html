@@ -7,8 +7,7 @@
 <style>
   body { font-family: Arial, sans-serif; padding: 2rem; background: #f5f5f5; }
   textarea { width: 100%; height: 200px; margin-bottom: 1rem; }
-  button { padding: 0.5rem 1rem; font-size: 1rem; }
-  #output a { word-break: break-all; }
+  input, button { padding: 0.5rem; font-size: 1rem; }
 </style>
 </head>
 <body>
@@ -18,27 +17,15 @@
 <p id="output"></p>
 
 <script>
-function randomString(length = 50) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for(let i=0;i<length;i++){
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-}
-
 function protectCode() {
     const code = document.getElementById('codeInput').value;
     if(!code) return alert('Please enter some code.');
 
-    // Encode code as Base64
+    // Convert code to Base64 to "hide" it
     const encoded = btoa(unescape(encodeURIComponent(code)));
 
-    // Generate a long, random query string parameter
-    const longParam = randomString(50) + '=' + encoded;
-
-    // Construct the URL pointing to viewer.html
-    const protectedURL = window.location.origin + '/viewer.html?' + longParam;
+    // Create a new URL with the code encoded as a query parameter
+    const protectedURL = window.location.origin + '/protected.html?c=' + encoded;
 
     document.getElementById('output').innerHTML = `
         <strong>Protected URL:</strong> <a href="${protectedURL}" target="_blank">${protectedURL}</a>
